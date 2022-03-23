@@ -30,7 +30,7 @@ php artisan vendor:publish --provider=RocketsLab\\WALaravel\\WALaravelServicePro
 Como esse pacote é fortemente dependente de websockets, tem
 incluído junto a lib [@beyondcode/laravel-websockets](https://github.com/beyondcode/laravel-websockets).
 
-### Uso básico
+## Iniciando os serviços
 
 Será necessário inciar ambos servidores de **websocket** e a própria lib
 **baileys-api**
@@ -68,6 +68,8 @@ controle sobre estes eventos, pode desativar o registro automático
 dos eventos alterando o parâmetro `register_events` no arquivo de
 configuração `config/walaravel.php` para **false**.
 
+### Lado do servidor
+
 Criando uma nova sessão:
 
 ```php
@@ -97,7 +99,89 @@ Route::post('sendMessage', funciton(Request $request) {
 })
 ```
 
-Esta documentação está em WIP, assim como este pacote.
+### Lado cliente (Laravel Echo)
+
+Configure o Laravel Echo conforme a [documentação](https://laravel.com/docs/9.x/broadcasting#client-side-installation).
+
+Os hooks enviados pela API chegam na forma de requisições POST para
+o servidor, esse pacote já tem estas rotas pré configuradas e para
+cada hook recebido é disparado um evento do lado do servidor, e este
+evento é feito um broadcast com os dados recebidos pelo evento.
+
+Para que o cliente/browser possa receber estes eventos e processar
+a informação, precisa-se escutar um canal específico em `walaravel.{id-da-sessão}`.
+
+Os eventos que podem ser escutados no momento são:
+
+| Evento           | Descrição                                                |
+|------------------|----------------------------------------------------------|
+| .connection-open | Ocorre quando uma sessão foi estabelecida com sucesso.   |
+| .connection-closed | Ocorre quando a conexão foi interrompida (logout).       |
+| .connection-connecting | Ocorre quando se lê o QRCode e inicia-se a autenticação. |
+| .connnection-qrcode | Ocorre quando um QRCode é gerado para ser lido.          |
+| .connection-updated | Ocorre quando há alguma atualização na conexão (WIP). |
+| .message-upsert | Ocorre quando há novas atualizações em mensagens e notificações. |
+
+#### Segue um pequeno exemplo:
+
+Alterações no arquivo de layout (app.blade.php)...
+
+> No head do layout precisamos remover o link para o `app.js` e passar
+> esse link para o final do body do layout.
+
+```html
+<head>
+    ....
+    <!-- remover essa linha -->
+    <link rel="stylesheet" href="{{ asset('js/app.js') }}" defer>
+</head>
+<body>
+    ...
+    <!-- incluir ela aqui no final -->
+    <link rel="stylesheet" href="{{ asset('js/app.js') }}">
+    @stack('scripts')
+</body>
+```
+
+Carregando a view...
+
+> Na rota que carrega a view pode-se passar um atributo `$sessionId`
+> para identificar a sessão que vai receber os eventos, dessa forma
+> se outro evento de outra sessão for enviado esse será descartado.
+
+```php
+Route::get('whatsapp-config', function() { 
+   
+   $sessionId = 'my-session';
+   return view('wa-config', compact('sessionId')); 
+
+});
+```
+
+Colocando o Echo para escutar os eventos da sessão `my-session`...
+
+> Em alguma view blade coloque o bloco @push ao final. 
+> O `$sessionId` aqui do exemplo é recebida como retorno ao
+> carregar a view, pode ser estático ou vindo de um banco de dados. 
+
+```php
+<!-- VIEW: wa-config -->
+
+@push('scripts') 
+    <script>
+        Echo.channel('{{ ".meesage-upsert.{$sessionId}" }}') 
+            .listen('.message-upsert', ({ event }) => {
+                console.log("MU: " + JSON.stringify(event))
+            });
+    </script>
+@endpush
+```
+
+**Continua...**
+
+----
+
+*Esta documentação está em WIP, assim como este pacote.*
 
 Qualquer dúvida ou sugestão por favor contate-nos via:
 
