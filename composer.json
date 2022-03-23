@@ -1,0 +1,22 @@
+{
+    "name": "rocketslab/wa-laravel",
+    "description": "Wrapper for Laravel to use WhatsApp Baileys Api",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "RocketsLab",
+            "email": "oi@rocketslab.com.br"
+        }
+    ],
+    "require": {
+        "beyondcode/laravel-websockets": "^1.13",
+        "laravel/framework": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "RocketsLab\\WALaravel\\": "src"
+        }
+    },
+    "minimum-stability": "dev"
+}
