@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+
+  },
+  "dependencies": {
+    "baileys-api": "github:tiagoandrepro/baileys-api"
+  }
+}

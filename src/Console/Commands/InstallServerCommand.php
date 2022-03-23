@@ -17,34 +17,34 @@ class InstallServerCommand extends Command
 
     public function handle()
     {
-        $this->info("Updating server dependencies...");
-
-        $packageArray = json_decode(file_get_contents(base_path('package.json')), true);
-
-        if(!isset($packageArray['dependencies'])) {
-            $packageArray = array_merge($packageArray, [
-                'dependencies' => []
-            ]);
-        }
-
-        if(isset($packageArray['dependencies']['baileys-api'])) {
-
-            $this->comment("Dependency already added.");
-
-        } else {
-            $this->comment("Dependency 'baileys-api' added.");
-            $packageArray['dependencies'] = array_merge($packageArray['dependencies'], [
-                'baileys-api' => "github:tiagoandrepro/baileys-api"
-            ]);
-
-            $updatedJson = json_encode($packageArray, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-
-            file_put_contents(base_path('package.json'), $updatedJson);
-        }
+//        $this->info("Updating server dependencies...");
+//
+//        $packageArray = json_decode(file_get_contents(__DIR__ . '/../../../package.json'), true);
+//
+//        if(!isset($packageArray['dependencies'])) {
+//            $packageArray = array_merge($packageArray, [
+//                'dependencies' => []
+//            ]);
+//        }
+//
+//        if(isset($packageArray['dependencies']['baileys-api'])) {
+//
+//            $this->comment("Dependency already added.");
+//
+//        } else {
+//            $this->comment("Dependency 'baileys-api' added.");
+//            $packageArray['dependencies'] = array_merge($packageArray['dependencies'], [
+//                'baileys-api' => "github:tiagoandrepro/baileys-api"
+//            ]);
+//
+//            $updatedJson = json_encode($packageArray, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+//
+//            file_put_contents(base_path('package.json'), $updatedJson);
+//        }
 
         $this->info('Running npm install...');
 
-        (new Process(['npm', 'install'], base_path()))
+        (new Process(['npm', 'install'], __DIR__ . '/../../../'))
             ->setTimeout(null)
             ->run(function ($type, $output) {
                 $this->output->write($output);
