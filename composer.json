@@ -15,7 +15,14 @@
     },
     "autoload": {
         "psr-4": {
-            "RocketsLab\\WALaravel\\": "src"
+            "RocketsLab\\WALaravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RocketsLab\\WALaravel\\WALaravelServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev"
