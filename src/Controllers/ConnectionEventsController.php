@@ -4,6 +4,7 @@ namespace RocketsLab\WALaravel\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use RocketsLab\WALaravel\Concerns\HasEventData;
 use RocketsLab\WALaravel\Events\ConnectionClosed;
 use RocketsLab\WALaravel\Events\ConnectionConnecting;
 use RocketsLab\WALaravel\Events\ConnectionOpen;
@@ -11,6 +12,8 @@ use RocketsLab\WALaravel\Events\ConnectionQrcode;
 
 class ConnectionEventsController extends Controller
 {
+    use HasEventData;
+
     public function close(Request $request)
     {
         event(new ConnectionClosed(...$this->buildEventData($request)));
@@ -29,10 +32,5 @@ class ConnectionEventsController extends Controller
     public function qrcode(Request $request)
     {
         event(new ConnectionQrcode(...$this->buildEventData($request)));
-    }
-
-    protected function buildEventData(Request $request): array
-    {
-        return $request->only(['instance', 'type', 'data']);
     }
 }
