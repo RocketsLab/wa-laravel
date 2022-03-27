@@ -1,9 +1,10 @@
 <?php
 namespace RocketsLab\WALaravel\Concerns;
 
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-trait WAMessage
+trait HasMessage
 {
     public function sendText($receiver, $message, string $session = null) {
         $textMessageTemplate = [
@@ -37,9 +38,14 @@ trait WAMessage
         return $this->sendWAMessage($receiver, $imageMessageTemplate, $session);
     }
 
-    protected function sendWAMessage($receiver, $message, $session = null)
+    /**
+     * @throws \RocketsLab\WALaravel\Exceptions\SessionNotDefined
+     */
+    protected function sendWAMessage($receiver, $message, $session = null): Response
     {
         $currentSession = $session ?? $this->session;
+
+        $this->checkForSession($currentSession);
 
         //TODO: try catch and check response
         return Http::post("{$this->host}:{$this->port}/message/send?id={$currentSession}", [

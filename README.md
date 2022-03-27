@@ -80,7 +80,7 @@ Criando uma nova sessão:
     $wa = \RocketsLab\WALaravel\WhatsApp::factory();
     /* Recomenda-se remover a sessão existente */
     $wa->removeSession('session-id');   
-    $wa->start('session-id', false);
+    $wa->startSession('session-id', false);
 ```
 
 O retorno dos métodos é um `Http/Response` provido pelo cliente `Http`
