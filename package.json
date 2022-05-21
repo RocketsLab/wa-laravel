@@ -1,9 +1,9 @@
 {
   "private": true,
-  "scripts": {
-
-  },
+  "scripts": {},
   "dependencies": {
-    "baileys-api": "github:tiagoandrepro/baileys-api"
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "baileys-api": "github:tiagoandrepro/baileys-api",
+    "qrcode": "^1.5.0"
   }
 }
